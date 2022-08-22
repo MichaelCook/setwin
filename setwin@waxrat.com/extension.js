@@ -143,6 +143,7 @@ function _buttonPressed() {
                 if (rule.workspace == -1) {
                     mw.stick();
                 } else {
+                    mw.unstick();
                     log(`setwin: | | | workspace ${rule.workspace}`);
                     let mgr = global.workspace_manager;
                     for (let i = mgr.n_workspaces; i <= rule.workspace; i++) {
