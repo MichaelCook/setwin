@@ -1,0 +1,73 @@
+[
+    {
+        "wmclass": "^QtPoll$",
+        "workspace": -1,
+        "x": 0,
+        "y": -33
+    },
+    {
+        "wmclass": "^Emacs$",
+        "title": "@porcupine|@ursine",
+        "workspace": 0,
+        "x": 0,
+        "y": 0,
+        "width": 920,
+        "height": -60
+    },
+    {
+        "wmclass": "^Emacs$",
+        "title": "@kilo",
+        "workspace": 1,
+        "x": 0,
+        "y": 0,
+        "width": 920,
+        "height": -60
+    },
+    {
+        "wmclass": "^QtEdPod$",
+        "workspace": 3,
+        "width": 0,
+        "height": 0
+    },
+    {
+        "wmclass": "^gnome-terminal-server$",
+        "title": "^(porcupine|ursine):",
+        "workspace": 0,
+        "x": 925,
+        "y": 27,
+        "width": 1000,
+        "height": -20
+    },
+    {
+        "wmclass": "^gnome-terminal-server$",
+        "title": "^wally:",
+        "workspace": -1,
+        "x": 50,
+        "y": 50,
+        "width": 900,
+        "height": 800
+    },
+    {
+        "wmclass": "^gnome-terminal-server$",
+        "title": "^kilo:",
+        "workspace": 1,
+        "x": 925,
+        "y": 27,
+        "width": 1000,
+        "height": -20
+    },
+    {
+        "wmclass": "^Google-chrome$",
+        "workspace": 2,
+        "width": 0,
+        "height": 0
+    },
+    {
+        "wmclass": "^libreoffice-calc$",
+        "workspace": 4,
+        "x": 978,
+        "y": 24,
+        "width": 940,
+        "height": -32
+    }
+]

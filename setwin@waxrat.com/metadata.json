@@ -1,0 +1,8 @@
+{
+  "name": "SetWin",
+  "description": "Place windows",
+  "uuid": "setwin@waxrat.com",
+  "shell-version": [
+    "42"
+  ]
+}
