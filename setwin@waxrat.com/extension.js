@@ -2,7 +2,7 @@ const Main = imports.ui.main;
 const {Gio, GLib, Shell, Meta, St} = imports.gi;
 
 class Rule {
-    constructor(wmclass, title, workspace, x, y, width, height) {
+    constructor(wmclass, title, workspace, x, y, width, height, above) {
         this.wmclass = wmclass === undefined ? undefined : new RegExp(wmclass);
         this.title = title === undefined ? undefined : new RegExp(title);
         this.workspace = workspace; // 0-based, -1 means sticky (i.e., all workspaces)
@@ -10,11 +10,12 @@ class Rule {
         this.y = y;
         this.width = width;     // 0 to maximize
         this.height = height;   // 0 to maximize
+        this.above = above;     // "Always on top"
     }
 }
 
 Rule.prototype.toString = function() {
-  return `Rule(${this.wmclass},${this.title},${this.workspace},${this.x},${this.y},${this.width},${this.height})`;
+  return `Rule(${this.wmclass},${this.title},${this.workspace},${this.x},${this.y},${this.width},${this.height},${this.above})`;
 }
 
 let _button;
@@ -23,7 +24,7 @@ function _buttonPressed() {
     log('setwin: _buttonPressed...');
 
     let home_dir = GLib.get_home_dir();
-    let config_path = GLib.build_filenamev([home_dir, '.config/setwin.json']);
+    let config_path = GLib.build_filenamev([home_dir, 'lib/setwin.json']);
 
     let contents = Shell.get_file_contents_utf8_sync(config_path);
 
@@ -40,8 +41,9 @@ function _buttonPressed() {
         let y = cfg['y'];
         let width = cfg['width'];
         let height = cfg['height'];
+        let above = cfg['above'];
         // log(`setwin: wmclass=${wmclass}, title=${title}, workspace=${workspace}, x=${x}, y=${y}, width=${width}, height=${height}`);
-        let rule = new Rule(wmclass, title, workspace, x, y, width, height);
+        let rule = new Rule(wmclass, title, workspace, x, y, width, height, above);
         // log(`setwin: rule ${rule}`);
         rules.push(rule);
     }
@@ -149,6 +151,16 @@ function _buttonPressed() {
                         mgr.append_new_workspace(false, 0);
                     }
                     mw.change_workspace_by_index(rule.workspace, false);
+                }
+            }
+
+            if (rule.above !== undefined) {
+                if (rule.above) {
+                    log(`setwin: | | | make_above`);
+                    mw.make_above();
+                } else {
+                    log(`setwin: | | | unmake_above`);
+                    mw.unmake_above();
                 }
             }
         }
