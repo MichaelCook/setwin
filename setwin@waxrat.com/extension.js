@@ -1,3 +1,5 @@
+// Copyright (c) Michael Cook <michael@waxrat.com> All rights reserved.
+
 const Main = imports.ui.main;
 const {Gio, GLib, Shell, Meta, St} = imports.gi;
 
@@ -30,6 +32,9 @@ function _buttonPressed() {
 
     let configs = JSON.parse(contents);
 
+    /*
+      Create the array of Rules objects from the `config_path` file
+     */
     let rules = [];
     for (let i = 0; i < configs.length; i++) {
         let cfg = configs[i];
@@ -50,6 +55,9 @@ function _buttonPressed() {
 
     log(`setwin: Rule count ${rules.length}`);
 
+    /*
+      Log info about all the current windows
+     */
     let actors = global.get_window_actors();
     for (let ai = 0; ai < actors.length; ai++) {
         let actor = actors[ai];
@@ -66,11 +74,18 @@ function _buttonPressed() {
             `x=${x},y=${y},width=${width},height=${height}`);
     }
 
+    /*
+      Get the monitor size
+    */
     let geo = global.display.get_monitor_geometry(0);  // TODO: support multiple monitors
     log(`setwin: monitor geometry ${geo.x} ${geo.y} ${geo.width} ${geo.height}`);
     let monitor_width = geo.width;
     let monitor_height = geo.height;
 
+    /*
+      For each rule, try to match it on each window.
+      If there's a match, then apply the rule's settings to that window
+     */
     for (let ri = 0; ri < rules.length; ri++) {
         let rule = rules[ri];
         log(`setwin: Rule #${ri+1}: ${rule}`);
@@ -145,12 +160,15 @@ function _buttonPressed() {
                 } else {
                     mw.unstick();
                     log(`setwin: | | | workspace ${rule.workspace}`);
+
+                    /* Create new workspaces if necessary */
                     let mgr = global.workspace_manager;
                     for (let i = mgr.n_workspaces; i <= rule.workspace; i++) {
                         log(`setwin: | | | add workspace ${i-1}`);
                         mw.change_workspace_by_index(i - 1, false);
                         mgr.append_new_workspace(false, 0);
                     }
+
                     mw.change_workspace_by_index(rule.workspace, false);
                 }
             }
