@@ -28,7 +28,7 @@ function _buttonPressed() {
     log('setwin: _buttonPressed...');
 
     let home_dir = GLib.get_home_dir();
-    let config_path = GLib.build_filenamev([home_dir, 'lib/setwin.json']);
+    let config_path = GLib.build_filenamev([home_dir, '.config/setwin.json']);
 
     let contents = Shell.get_file_contents_utf8_sync(config_path);
 
