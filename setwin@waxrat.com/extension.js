@@ -1,5 +1,7 @@
 // Copyright (c) Michael Cook <michael@waxrat.com> All rights reserved.
 
+'use strict';
+
 const Main = imports.ui.main;
 const {Gio, GLib, Shell, Meta, St} = imports.gi;
 
