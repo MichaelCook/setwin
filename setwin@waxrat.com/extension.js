@@ -38,9 +38,7 @@ function _buttonPressed() {
       Create the array of Rules objects from the `config_path` file
      */
     let rules = [];
-    for (let i = 0; i < configs.length; i++) {
-        let cfg = configs[i];
-
+    configs.forEach(function (cfg) {
         let wmclass = cfg['wmclass'];
         let title = cfg['title'];
         let workspace = cfg['workspace'];
@@ -53,7 +51,7 @@ function _buttonPressed() {
         let rule = new Rule(wmclass, title, workspace, x, y, width, height, above);
         // log(`setwin: rule ${rule}`);
         rules.push(rule);
-    }
+    });
 
     log(`setwin: Rule count ${rules.length}`);
 
@@ -61,8 +59,7 @@ function _buttonPressed() {
       Log info about all the current windows
      */
     let actors = global.get_window_actors();
-    for (let ai = 0; ai < actors.length; ai++) {
-        let actor = actors[ai];
+    actors.forEach(function (actor) {
         let mw = actor.meta_window;
 
         let wmclass = mw.get_wm_class();
@@ -72,9 +69,8 @@ function _buttonPressed() {
         let width = actor.get_width();
         let height = actor.get_height();
 
-        log(`setwin: Actor #${ai+1} wmclass=${wmclass},title=${title},` +
-            `x=${x},y=${y},width=${width},height=${height}`);
-    }
+        log(`setwin: Actor wmclass=${wmclass},title=${title},x=${x},y=${y},width=${width},height=${height}`);
+    });
 
     /*
       Get the monitor size
@@ -88,19 +84,16 @@ function _buttonPressed() {
       For each rule, try to match it on each window.
       If there's a match, then apply the rule's settings to that window
      */
-    for (let ri = 0; ri < rules.length; ri++) {
-        let rule = rules[ri];
-        log(`setwin: Rule #${ri+1}: ${rule}`);
-
-        for (let ai = 0; ai < actors.length; ai++) {
-            let actor = actors[ai];
+    rules.forEach(function (rule) {
+        log(`setwin: Matching ${rule}`);
+        actors.forEach(function (actor) {
             let mw = actor.meta_window
 
             if (rule.wmclass !== undefined) {
                 let wmclass = mw.get_wm_class();
                 if (!rule.wmclass.test(wmclass)) {
                     log(`setwin: | wmclass unmatched ${wmclass}`);
-                    continue;
+                    return;
                 }
                 log(`setwin: | wmclass matched ${wmclass}`);
             }
@@ -109,7 +102,7 @@ function _buttonPressed() {
                 let title = mw.get_title();
                 if (!rule.title.test(title)) {
                     log(`setwin: | title unmatched ${title}`);
-                    continue;
+                    return;
                 }
                 log(`setwin: | title matched ${title}`);
             }
@@ -184,8 +177,8 @@ function _buttonPressed() {
                     mw.unmake_above();
                 }
             }
-        }
-    }
+        });
+    });
 
     log('setwin: _buttonPressed...done');
 }
