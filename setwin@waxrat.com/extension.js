@@ -6,7 +6,7 @@ const Main = imports.ui.main;
 const {Gio, GLib, Shell, Meta, St} = imports.gi;
 
 class Rule {
-    constructor(wmclass, title, workspace, x, y, width, height, above) {
+    constructor(wmclass, title, workspace, x, y, width, height, above, max_match) {
         this.wmclass = wmclass === undefined ? undefined : new RegExp(wmclass);
         this.title = title === undefined ? undefined : new RegExp(title);
         this.workspace = workspace; // 0-based, -1 means sticky (i.e., all workspaces)
@@ -15,11 +15,14 @@ class Rule {
         this.width = width;     // 0 to maximize
         this.height = height;   // 0 to maximize
         this.above = above;     // "Always on top"
+        this.max_match = max_match;
     }
 }
 
 Rule.prototype.toString = function() {
-  return `Rule(${this.wmclass},${this.title},${this.workspace},${this.x},${this.y},${this.width},${this.height},${this.above})`;
+  return `Rule(${this.wmclass},${this.title},${this.workspace},` +
+         `${this.x},${this.y},${this.width},${this.height},` +
+         `${this.above},${this.max_match})`;
 }
 
 let _button;
@@ -47,30 +50,13 @@ function _buttonPressed() {
         let width = cfg['width'];
         let height = cfg['height'];
         let above = cfg['above'];
-        // log(`setwin: wmclass=${wmclass}, title=${title}, workspace=${workspace}, x=${x}, y=${y}, width=${width}, height=${height}`);
-        let rule = new Rule(wmclass, title, workspace, x, y, width, height, above);
+        let max_match = cfg['max_match'];
+        let rule = new Rule(wmclass, title, workspace, x, y, width, height, above, max_match);
         // log(`setwin: rule ${rule}`);
         rules.push(rule);
     });
 
     log(`setwin: Rule count ${rules.length}`);
-
-    /*
-      Log info about all the current windows
-     */
-    let actors = global.get_window_actors();
-    actors.forEach(function (actor) {
-        let mw = actor.meta_window;
-
-        let wmclass = mw.get_wm_class();
-        let title = mw.get_title();
-        let x = actor.get_x();
-        let y = actor.get_y();
-        let width = actor.get_width();
-        let height = actor.get_height();
-
-        log(`setwin: Actor wmclass=${wmclass},title=${title},x=${x},y=${y},width=${width},height=${height}`);
-    });
 
     /*
       Get the monitor size
@@ -81,13 +67,23 @@ function _buttonPressed() {
     let monitor_height = geo.height;
 
     /*
-      For each rule, try to match it on each window.
+      For each window, try to match each rule.
       If there's a match, then apply the rule's settings to that window
      */
-    rules.forEach(function (rule) {
-        log(`setwin: Matching ${rule}`);
-        actors.forEach(function (actor) {
-            let mw = actor.meta_window
+    let actors = global.get_window_actors();
+    actors.forEach(function (actor) {
+        let mw = actor.meta_window
+        let wmclass = mw.get_wm_class();
+        let title = mw.get_title();
+        log(`setwin: Window "${wmclass}" "${title}"`);
+
+        rules.forEach(function (rule) {
+            log(`setwin: Matching ${rule}`);
+
+            if (rule.max_match !== undefined && rule.max_match == 0) {
+                log(`setwin: | exhausted max_match`);
+                return;
+            }
 
             if (rule.wmclass !== undefined) {
                 let wmclass = mw.get_wm_class();
@@ -108,6 +104,9 @@ function _buttonPressed() {
             }
 
             log(`setwin: | | APPLY`);
+
+            if (rule.max_match !== undefined)
+                --rule.max_match;
 
             let x = rule.x;
             let y = rule.y;
