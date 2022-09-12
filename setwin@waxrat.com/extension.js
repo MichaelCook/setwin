@@ -189,7 +189,7 @@ function init() {
                            reactive: true,
                            can_focus: true,
                            track_hover: true });
-    let icon = new St.Icon({ icon_name: 'system-run-symbolic',
+    let icon = new St.Icon({ icon_name: 'media-record-symbolic',
                              style_class: 'system-status-icon' });
 
     _button.set_child(icon);
