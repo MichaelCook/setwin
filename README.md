@@ -84,3 +84,7 @@ or
 To check the Json syntax:
 
     jq . ~/.config/setwin.json
+
+To validate against the schema:
+
+    python3 -m jsonschema --instance setwin.json schema.json
