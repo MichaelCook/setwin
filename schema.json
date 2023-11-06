@@ -1,0 +1,52 @@
+{
+  "$id": "http://www.waxrat.com/setwin",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "JSON schema for Setwin's configuration file setwin.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "wmclass": {
+        "$comment": "Match against the window's window manager class",
+        "type": "string",
+        "format": "regex"
+      },
+      "title": {
+        "$comment": "Match against the window's title",
+        "type": "string",
+        "format": "regex"
+      },
+      "workspace": {
+        "$comment": "Place this window on the specified workspace (0-based), or -1 to be on all workspaces",
+        "type": "integer",
+        "minimum": -1
+      },
+      "x": {
+        "$comment": "Place this window at the specified X-coordinate, or negative means relative to the monitor width",
+        "type": "integer"
+      },
+      "y": {
+        "$comment": "Place this window at the specified Y-coordinate, or negative means relative to the monitor height",
+        "type": "integer"
+      },
+      "width": {
+        "$comment": "Set this window's height; negative means relative to the monitor width; 0 to maximize",
+        "type": "integer"
+      },
+      "height": {
+        "$comment": "Set this window's width; negative means relative to the monitor height; 0 to maximize",
+        "type": "integer"
+      },
+      "max_match": {
+        "$comment": "Apply this rule no more than this many times",
+        "type": "integer",
+        "minimum": 1
+      },
+      "above": {
+        "$comment": "Mark this window to always be above other windows",
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false
+  }
+}
