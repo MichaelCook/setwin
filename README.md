@@ -71,15 +71,7 @@ Enable the extension:
 If you make mistakes in the setwin.json file, the extension will log errors.
 Look for errors like this:
 
-    grep gnome-shell /var/log/syslog
-
-or
-
-    tail --follow=name /var/log/syslog | grep gnome-shell
-
-or
-
-    journalctl -f -o cat /usr/bin/gnome-shell
+    journalctl -f | grep gnome-shell
 
 To check the Json syntax:
 
