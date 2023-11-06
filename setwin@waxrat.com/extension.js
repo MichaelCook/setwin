@@ -128,23 +128,27 @@ function _buttonPressed() {
             }
 
             if (x !== undefined || y !== undefined || width !== undefined || height != undefined) {
+                let old_x = actor.get_x();
+                let old_y = actor.get_y();
+                let old_width = actor.get_width();
+                let old_height = actor.get_height();
                 if (x === undefined)
-                    x = actor.get_x();
+                    x = old_x;
                 else if (x < 0)
                     x = monitor_width + x;
                 if (y === undefined)
-                    y = actor.get_y();
+                    y = old_y;
                 else if (y < 0)
                     y = monitor_height + y;
                 if (width === undefined)
-                    width = actor.get_width();
+                    width = old_width;
                 else if (width < 0)
                     width = monitor_width + width;
                 if (height === undefined)
-                    height = actor.get_height();
+                    height = old_height;
                 else if (height < 0)
                     height = monitor_height + height;
-                log(`setwin: | | | x ${x}, y ${y}, w ${width}, h ${height}`);
+                log(`setwin: | | | x ${old_x}->${x}, y ${old_y}->${y}, w ${old_width}->${width}, h ${old_height}->${height}`);
                 mw.move_resize_frame(true, x, y, width, height);
             }
 
