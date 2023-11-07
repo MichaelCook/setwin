@@ -1,5 +1,7 @@
 // Copyright (c) Michael Cook <michael@waxrat.com> All rights reserved.
 
+'use strict';
+
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib'
 import St from 'gi://St';
@@ -208,7 +210,7 @@ class Indicator extends PanelMenu.Button {
     }
 });
 
-export default class IndicatorExampleExtension extends Extension {
+export default class SetwinExtension extends Extension {
     enable() {
         this._indicator = new Indicator();
         Main.panel.addToStatusArea(this.uuid, this._indicator);
