@@ -50,7 +50,7 @@ class Indicator extends PanelMenu.Button {
     }
 
     _activated() {
-        log('setwin45: _activated...');
+        log('setwin: _activated...');
 
         let home_dir = GLib.get_home_dir();
         let config_path = GLib.build_filenamev([home_dir, '.config/setwin.json']);
@@ -74,17 +74,17 @@ class Indicator extends PanelMenu.Button {
             let above = cfg['above'];
             let max_match = cfg['max_match'];
             let rule = new Rule(wmclass, title, workspace, x, y, width, height, above, max_match);
-            // log(`setwin45: rule ${rule}`);
+            // log(`setwin: rule ${rule}`);
             rules.push(rule);
         });
 
-        log(`setwin45: Rule count ${rules.length}`);
+        log(`setwin: Rule count ${rules.length}`);
 
         /*
           Get the monitor size
         */
         let geo = global.display.get_monitor_geometry(0);  // TODO: support multiple monitors
-        log(`setwin45: monitor geometry ${geo.x} ${geo.y} ${geo.width} ${geo.height}`);
+        log(`setwin: monitor geometry ${geo.x} ${geo.y} ${geo.width} ${geo.height}`);
         let monitor_width = geo.width;
         let monitor_height = geo.height;
 
@@ -93,40 +93,40 @@ class Indicator extends PanelMenu.Button {
           If there's a match, then apply the rule's settings to that window
          */
         let actors = global.get_window_actors();
-        log(`setwin45: actors=${actors}`);
+        log(`setwin: actors=${actors}`);
         actors.forEach(function (actor) {
             let mw = actor.meta_window
             let wmclass = mw.get_wm_class();
             let title = mw.get_title();
-            log(`setwin45: Window "${wmclass}" "${title}"`);
+            log(`setwin: Window "${wmclass}" "${title}"`);
 
             rules.forEach(function (rule) {
-                log(`setwin45: Matching ${rule}`);
+                log(`setwin: Matching ${rule}`);
 
                 if (rule.max_match !== undefined && rule.max_match == 0) {
-                    log(`setwin45: | exhausted max_match`);
+                    log(`setwin: | exhausted max_match`);
                     return;
                 }
 
                 if (rule.wmclass !== undefined) {
                     let wmclass = mw.get_wm_class();
                     if (!rule.wmclass.test(wmclass)) {
-                        log(`setwin45: | wmclass unmatched ${wmclass}`);
+                        log(`setwin: | wmclass unmatched ${wmclass}`);
                         return;
                     }
-                    log(`setwin45: | wmclass matched ${wmclass}`);
+                    log(`setwin: | wmclass matched ${wmclass}`);
                 }
 
                 if (rule.title !== undefined) {
                     let title = mw.get_title();
                     if (!rule.title.test(title)) {
-                        log(`setwin45: | title unmatched ${title}`);
+                        log(`setwin: | title unmatched ${title}`);
                         return;
                     }
-                    log(`setwin45: | title matched ${title}`);
+                    log(`setwin: | title matched ${title}`);
                 }
 
-                log(`setwin45: | | APPLY`);
+                log(`setwin: | | APPLY`);
 
                 if (rule.max_match !== undefined)
                     --rule.max_match;
@@ -137,15 +137,15 @@ class Indicator extends PanelMenu.Button {
                 let height = rule.height;
 
                 if (width === 0 && height === 0) {
-                    log(`setwin45: | | | maximize both`);
+                    log(`setwin: | | | maximize both`);
                     mw.maximize(Meta.MaximizeFlags.BOTH);
                     x = y = width = height = undefined;
                 } else if (width === 0) {
-                    log(`setwin45: | | | maximize horizontal`);
+                    log(`setwin: | | | maximize horizontal`);
                     mw.maximize(Meta.MaximizeFlags.HORIZONTAL);
                     x = width = undefined;
                 } else if (height === 0) {
-                    log(`setwin45: | | | maximize vertical`);
+                    log(`setwin: | | | maximize vertical`);
                     mw.maximize(Meta.MaximizeFlags.VERTICAL);
                     y = height = undefined;
                 }
@@ -171,7 +171,7 @@ class Indicator extends PanelMenu.Button {
                         height = old_height;
                     else if (height < 0)
                         height = monitor_height + height;
-                    log(`setwin45: | | | x ${old_x}->${x}, y ${old_y}->${y}, w ${old_width}->${width}, h ${old_height}->${height}`);
+                    log(`setwin: | | | x ${old_x}->${x}, y ${old_y}->${y}, w ${old_width}->${width}, h ${old_height}->${height}`);
                     mw.move_resize_frame(true, x, y, width, height);
                 }
 
@@ -180,12 +180,12 @@ class Indicator extends PanelMenu.Button {
                         mw.stick();
                     } else {
                         mw.unstick();
-                        log(`setwin45: | | | workspace ${rule.workspace}`);
+                        log(`setwin: | | | workspace ${rule.workspace}`);
 
                         /* Create new workspaces if necessary */
                         let mgr = global.workspace_manager;
                         for (let i = mgr.n_workspaces; i <= rule.workspace; i++) {
-                            log(`setwin45: | | | add workspace ${i-1}`);
+                            log(`setwin: | | | add workspace ${i-1}`);
                             mw.change_workspace_by_index(i - 1, false);
                             mgr.append_new_workspace(false, 0);
                         }
@@ -196,17 +196,17 @@ class Indicator extends PanelMenu.Button {
 
                 if (rule.above !== undefined) {
                     if (rule.above) {
-                        log(`setwin45: | | | make_above`);
+                        log(`setwin: | | | make_above`);
                         mw.make_above();
                     } else {
-                        log(`setwin45: | | | unmake_above`);
+                        log(`setwin: | | | unmake_above`);
                         mw.unmake_above();
                     }
                 }
             });
         });
 
-        log('setwin45: _activated...done');
+        log('setwin: _activated...done');
     }
 });
 
@@ -214,11 +214,11 @@ export default class SetwinExtension extends Extension {
     enable() {
         this._indicator = new Indicator();
         Main.panel.addToStatusArea(this.uuid, this._indicator);
-        log('setwin45: enable')
+        log('setwin: enable')
     }
 
     disable() {
-        log('setwin45: disable')
+        log('setwin: disable')
         this._indicator.destroy();
         this._indicator = null;
     }
