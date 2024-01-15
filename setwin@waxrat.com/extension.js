@@ -143,11 +143,15 @@ class Indicator extends PanelMenu.Button {
                 } else if (width === 0) {
                     log(`setwin: | | | maximize horizontal`);
                     mw.maximize(Meta.MaximizeFlags.HORIZONTAL);
+                    mw.unmaximize(Meta.MaximizeFlags.VERTICAL);
                     x = width = undefined;
                 } else if (height === 0) {
                     log(`setwin: | | | maximize vertical`);
                     mw.maximize(Meta.MaximizeFlags.VERTICAL);
+                    mw.unmaximize(Meta.MaximizeFlags.HORIZONTAL);
                     y = height = undefined;
+                } else {
+                    mw.unmaximize(Meta.MaximizeFlags.BOTH);
                 }
 
                 if (x !== undefined || y !== undefined || width !== undefined || height != undefined) {
